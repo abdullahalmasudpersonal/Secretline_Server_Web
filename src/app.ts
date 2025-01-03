@@ -1,12 +1,13 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import notFound from './app/middleware/notFound';
+import router from './app/routes';
+import globalErrorHandler from './app/middleware/globalErrorhandler';
 
 const app: Application = express();
 
 const corsOptions = {
-  origin: ['https://mahsez.vercel.app', 'http://localhost:5173'],
-  // methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+  origin: ['https://secretline.vercel.app', 'http://localhost:4200'],
   credentials: true,
 };
 
@@ -14,9 +15,13 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 
+app.use('/api/v1', router);
+
 app.get('/', (req: Request, res: Response) => {
   res.send('Secretline Server In Progress!');
 });
+
+app.use(globalErrorHandler);
 
 // not found
 app.use(notFound);

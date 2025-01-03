@@ -9,6 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //   });
 // };
 const notFound = (req, res) => {
-  res.status(404).send("Route not found");
+    res.status(404).send('Route not found');
 };
 exports.default = notFound;

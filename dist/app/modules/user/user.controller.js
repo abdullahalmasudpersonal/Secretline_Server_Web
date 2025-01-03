@@ -12,23 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const http_1 = require("http");
-const mongoose_1 = __importDefault(require("mongoose"));
-const config_1 = __importDefault(require("./app/config"));
-const app_1 = __importDefault(require("./app"));
-let server;
-function secretlineServer() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield mongoose_1.default.connect(config_1.default.databaseUrl);
-            server = new http_1.Server(app_1.default);
-            server.listen(config_1.default.port, () => {
-                console.log(`Secretline Server listening on port ${config_1.default.port}`);
-            });
-        }
-        catch (error) {
-            console.log(error);
-        }
+const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
+const user_service_1 = require("./user.service");
+// import httpStatus from 'http-status';
+const createGeneralUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const buyerData = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.buyer;
+    const result = yield user_service_1.UserService.createGeneralUserIntoDB();
+    (0, sendResponse_1.default)(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Buyer Created Successfully',
+        data: result,
     });
-}
-secretlineServer();
+}));
