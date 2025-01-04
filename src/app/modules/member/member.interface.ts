@@ -7,7 +7,6 @@ export type TMember = {
   email: string;
   profileImg?: string;
   about?: string;
-  onlineStatus?: 'online' | 'offline';
   gender?: 'male' | 'female' | 'other';
   isDeleted: boolean;
 };

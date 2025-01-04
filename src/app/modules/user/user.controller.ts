@@ -15,6 +15,31 @@ const createMember = catchAsync(async (req, res) => {
   });
 });
 
+const getMe = catchAsync(async (req, res) => {
+  const { email, role } = req.user;
+  const result = await UserService.getMeIntoDB(email, role);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Get my profile successfully',
+    data: result,
+  });
+});
+
+const updateMyProfile = catchAsync(async (req, res) => {
+  const result = await UserService.updateMyProfileIntoDB(req);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Update my profile successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createMember,
+  getMe,
+  updateMyProfile,
 };

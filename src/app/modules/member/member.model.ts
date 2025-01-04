@@ -7,6 +7,7 @@ const memberSchema = new Schema<TMember>(
       type: Schema.Types.ObjectId,
       required: true,
       unique: true,
+      ref: 'User',
     },
     name: {
       type: String,
@@ -25,11 +26,6 @@ const memberSchema = new Schema<TMember>(
     about: {
       type: String,
       required: false,
-    },
-    onlineStatus: {
-      type: String,
-      required: false,
-      default: 'offline',
     },
     gender: {
       type: String,

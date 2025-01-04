@@ -58,6 +58,20 @@ const createMemberIntoDB = async (req: Request, payload: TMember) => {
   }
 };
 
+const getMeIntoDB = async (email: string, role: string) => {
+  let result = null;
+  if (role === 'member') {
+    result = await Member.findOne({ email }).populate('user');
+  }
+  return result;
+};
+
+const updateMyProfileIntoDB = async (req: Request) => {
+  ////
+};
+
 export const UserService = {
   createMemberIntoDB,
+  getMeIntoDB,
+  updateMyProfileIntoDB,
 };
