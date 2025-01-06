@@ -14,28 +14,29 @@ const createMessage = catchAsync(async (req: Request, res) => {
   });
 });
 
-const getMessageSingleMember = catchAsync(async (req, res) => {
-  const result = await MessageService.getMessageSingleMemberIntoDB(req);
+const getAllUserChatInSingleMember = catchAsync(async (req, res) => {
+  const result = await MessageService.getAllUserChatInSingleMemberIntoDB(req);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Get single member message successfully',
+    message: 'Get all user chat in single member successfully',
     data: result,
   });
 });
 
-const getSingleMessage = catchAsync(async (req, res) => {
-  const result = await MessageService.getSingleMessageIntoDB(req);
+const getSingleUserChatInSingleMember = catchAsync(async (req, res) => {
+  const result =
+    await MessageService.getSingleUserChatInSingleMemberIntoDB(req);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Get single message successfully',
+    message: 'Get single user chat in single member successfully',
     data: result,
   });
 });
 
 export const MessageController = {
   createMessage,
-  getMessageSingleMember,
-  getSingleMessage,
+  getAllUserChatInSingleMember,
+  getSingleUserChatInSingleMember,
 };

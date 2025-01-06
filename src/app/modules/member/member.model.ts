@@ -3,6 +3,11 @@ import { TMember } from './member.interface';
 
 const memberSchema = new Schema<TMember>(
   {
+    userId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     user: {
       type: Schema.Types.ObjectId,
       required: true,

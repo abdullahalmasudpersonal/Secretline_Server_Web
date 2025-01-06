@@ -8,14 +8,15 @@ const router = Router();
 router.post('/send-message', MessageController.createMessage);
 
 router.get(
-  '/member-message',
+  '/get-all-user-chat-single-member',
   auth(USER_ROLE.admin, USER_ROLE.member),
-  MessageController.getMessageSingleMember,
+  MessageController.getAllUserChatInSingleMember,
 );
 
 router.get(
-  '/get-single-member-message/:chatId',
-  MessageController.getSingleMessage,
+  '/get-single-user-chat-single-member/:chatId',
+  auth(USER_ROLE.admin, USER_ROLE.member),
+  MessageController.getSingleUserChatInSingleMember,
 );
 
 export const MessageRoute = router;
