@@ -70,8 +70,13 @@ const updateMyProfileIntoDB = async (req: Request) => {
   ////
 };
 
+const getAllUserIntoDB = async (req: Request) => {
+  return await User.find();
+};
+
 export const UserService = {
   createMemberIntoDB,
   getMeIntoDB,
   updateMyProfileIntoDB,
+  getAllUserIntoDB,
 };

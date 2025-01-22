@@ -7,7 +7,12 @@ import globalErrorHandler from './app/middleware/globalErrorhandler';
 const app: Application = express();
 
 const corsOptions = {
-  origin: ['https://secretline.vercel.app', 'http://localhost:4200'],
+  origin: [
+    'https://secretline.vercel.app',
+    'http://localhost:4200',
+    'http://localhost:49452',
+    'http://localhost:5173',
+  ],
   credentials: true,
 };
 

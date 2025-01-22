@@ -7,29 +7,33 @@ import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
 const createMessageIntoDB = async (req: Request) => {
-  const { chatId, senderId, content, messageType } = req.body;
-  try {
-    /////
-    const newMessage = new Message({
-      chatId,
-      senderId,
-      content,
-      messageType,
-    });
-    const savedMessage = await newMessage.save();
-
-    // Update the chat's last message
-    await Chat.findByIdAndUpdate(
-      { _id: chatId },
-      {
-        lastMessage: content,
-        updatedAt: new Date(),
-      },
-    );
-    return savedMessage;
-  } catch (error) {
-    console.log('error', error);
+  const senderId = req.user.userId;
+  const { chatId, content, messageType } = req.body;
+  const chat = await Chat.findOne({ _id: chatId });
+  if (!chat) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No Chat found');
   }
+  const isSenderInChat = chat.userIds.includes(senderId);
+  if (!isSenderInChat) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'This is not your chat');
+  }
+  const newMessage = new Message({
+    chatId,
+    senderId,
+    content,
+    messageType,
+  });
+  const savedMessage = await newMessage.save();
+
+  // Update the chat's last message
+  await Chat.findByIdAndUpdate(
+    { _id: chatId },
+    {
+      lastMessage: content,
+      updatedAt: new Date(),
+    },
+  );
+  return savedMessage;
 };
 
 const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {
@@ -72,12 +76,7 @@ const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {
     phone: string;
     email: string;
   }
-  interface mergedData {
-    name: string;
-    userId: string;
-    phone: string;
-    email: string;
-  }
+
   const loggedInUserId = req.user.userId;
 
   const chats = await Chat.find({ userIds: loggedInUserId });

@@ -5,6 +5,12 @@ import auth from '../../middleware/auth';
 
 const router = Router();
 
+router.get(
+  '/',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.member),
+  UserController.getAllUser,
+);
+
 router.post('/create-member', UserController.createMember);
 
 router.get(

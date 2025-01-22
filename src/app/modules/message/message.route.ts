@@ -5,7 +5,11 @@ import { USER_ROLE } from '../user/user.constant';
 
 const router = Router();
 
-router.post('/send-message', MessageController.createMessage);
+router.post(
+  '/send-message',
+  auth(USER_ROLE.admin, USER_ROLE.member),
+  MessageController.createMessage,
+);
 
 router.get(
   '/get-all-user-chat-single-member',

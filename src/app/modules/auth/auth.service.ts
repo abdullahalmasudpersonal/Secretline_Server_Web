@@ -25,7 +25,6 @@ const loginUserIntoDB = async (req: Request) => {
     throw new AppError(httpStatus.FORBIDDEN, 'Password is incorrect!');
   const jwtPayload = {
     userId: user.userId,
-    phone: user.phone,
     email: user.email,
     role: user.role,
   };
