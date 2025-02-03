@@ -14,7 +14,7 @@ async function secretlineServer() {
 
     io = new SocketIOServer(server, {
       cors: {
-        origin: ['https://mahsez.vercel.app', 'http://localhost:5173'],
+        origin: ['https://secretline.vercel.app', 'http://localhost:5173'],
         methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
         credentials: true,
       },
