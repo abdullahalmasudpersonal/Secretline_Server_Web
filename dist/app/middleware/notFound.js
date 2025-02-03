@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// import httpStatus from "http-status";
 // const notFound = (res: Response) => {
 //   return res.status(httpStatus.NOT_FOUND).json({
 //     success: false,
