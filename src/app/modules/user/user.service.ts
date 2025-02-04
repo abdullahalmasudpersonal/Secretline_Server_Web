@@ -74,9 +74,21 @@ const getAllUserIntoDB = async (req: Request) => {
   return await User.find();
 };
 
+const getSingleUserIntoDB = async (req: Request) => {
+  const userId = req?.params?.userId;
+
+  const user = await Member.findOne({ userId }).select({
+    name: true
+  });
+  console.log(user);
+  return user;
+
+}
+
 export const UserService = {
   createMemberIntoDB,
   getMeIntoDB,
   updateMyProfileIntoDB,
   getAllUserIntoDB,
+  getSingleUserIntoDB
 };

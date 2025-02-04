@@ -11,6 +11,12 @@ router.get(
   UserController.getAllUser,
 );
 
+router.get(
+  '/singleuser/:userId',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.member),
+  UserController.getSingleUser,
+);
+
 router.post('/create-member', UserController.createMember);
 
 router.get(

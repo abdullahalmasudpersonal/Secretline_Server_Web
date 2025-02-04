@@ -48,9 +48,20 @@ const getAllUser = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleUser = catchAsync(async (req, res) => {
+  const result = await UserService.getSingleUserIntoDB(req);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Get single user successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createMember,
   getMe,
   updateMyProfile,
   getAllUser,
+  getSingleUser
 };
