@@ -78,9 +78,9 @@ const getSingleUserIntoDB = async (req: Request) => {
   const userId = req?.params?.userId;
 
   const user = await Member.findOne({ userId }).select({
-    name: true
-  });
-  console.log(user);
+    name: true,
+    profileImg: true
+  }).populate({ path: "user", select: "isOnline" })
   return user;
 
 }

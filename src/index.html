@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron File Downloader</title>
+</head>
+<body>
+    <h1>Download File to C:\ Drive</h1>
+    <button onclick="downloadFile()">Download</button>
+    <p id="status"></p>
+
+    <script>
+        const { ipcRenderer } = require("electron");
+
+        function downloadFile() {
+            document.getElementById("status").innerText = "Downloading...";
+            ipcRenderer.send("download-file");
+        }
+
+        ipcRenderer.on("download-complete", (event, message) => {
+            document.getElementById("status").innerText = message;
+        });
+
+        ipcRenderer.on("download-error", (event, message) => {
+            document.getElementById("status").innerText = message;
+        });
+    </script>
+</body>
+</html>
