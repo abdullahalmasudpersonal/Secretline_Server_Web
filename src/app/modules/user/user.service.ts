@@ -8,6 +8,8 @@ import { generateMemberId } from '../member/member.constant';
 import { Request } from 'express';
 import requestIp from 'request-ip';
 import { Member } from '../member/member.model';
+import { IUploadFile } from '../../interface/file';
+import { USER_ROLE } from './user.constant';
 
 const createMemberIntoDB = async (req: Request, payload: TMember) => {
   const ip = requestIp?.getClientIp(req);
@@ -67,7 +69,37 @@ const getMeIntoDB = async (email: string, role: string) => {
 };
 
 const updateMyProfileIntoDB = async (req: Request) => {
-  ////
+  const user = req?.user;
+  const userData = await User.findOne({ email: user?.email });
+  if (!userData) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User does not exists!');
+  }
+  const file = req.file as IUploadFile;
+  req.body.profileImg = file?.path;
+  console.log(req?.file, 'body');
+
+  let profileData;
+
+
+
+  if (userData?.role === USER_ROLE.member) {
+    profileData = await Member.findOneAndUpdate(
+      { email: userData?.email },
+      { $set: req.body },
+    );
+  }
+  // else if (userData?.role === USER_ROLE.admin) {
+  //   profileData = await Admin.findOneAndUpdate(
+  //     { email: userData?.email },
+  //     { $set: req.body },
+  //   );
+  // } else if (userData?.role === USER_ROLE.buyer) {
+  //   profileData = await Buyer.findOneAndUpdate(
+  //     { email: userData?.email },
+  //     { $set: req.body },
+  //   );
+  // }
+  return profileData;
 };
 
 const getAllUserIntoDB = async (req: Request) => {
@@ -82,13 +114,13 @@ const getSingleUserIntoDB = async (req: Request) => {
     profileImg: true
   }).populate({ path: "user", select: "isOnline" })
   return user;
-
 }
+
 
 export const UserService = {
   createMemberIntoDB,
   getMeIntoDB,
   updateMyProfileIntoDB,
   getAllUserIntoDB,
-  getSingleUserIntoDB
+  getSingleUserIntoDB,
 };

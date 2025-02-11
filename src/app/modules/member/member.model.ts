@@ -31,6 +31,7 @@ const memberSchema = new Schema<TMember>(
     about: {
       type: String,
       required: false,
+      default: "Hey there! I am using Secretline."
     },
     gender: {
       type: String,

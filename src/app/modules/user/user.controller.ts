@@ -58,10 +58,11 @@ const getSingleUser = catchAsync(async (req, res) => {
   });
 });
 
+
 export const UserController = {
   createMember,
   getMe,
   updateMyProfile,
   getAllUser,
-  getSingleUser
+  getSingleUser,
 };
