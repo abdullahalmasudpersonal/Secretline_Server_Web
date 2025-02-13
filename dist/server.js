@@ -17,6 +17,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("./app/config"));
 const app_1 = __importDefault(require("./app"));
 const socket_io_1 = require("socket.io");
+const user_model_1 = require("./app/modules/user/user.model");
 let server;
 let io;
 function secretlineServer() {
@@ -26,7 +27,7 @@ function secretlineServer() {
             server = new http_1.Server(app_1.default);
             io = new socket_io_1.Server(server, {
                 cors: {
-                    origin: ['https://secretline.vercel.app', 'http://localhost:5173'],
+                    origin: ['https://secretline.vercel.app', 'http://localhost:5173', 'http://localhost:5174'],
                     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
                     credentials: true,
                 },
@@ -35,14 +36,35 @@ function secretlineServer() {
             });
             const users = {};
             io.on('connection', (socket) => {
-                socket.on('userOnline', (userId) => {
+                socket.on('userOnline', (userId) => __awaiter(this, void 0, void 0, function* () {
                     users[userId] = socket.id;
-                });
+                    yield user_model_1.User.findOneAndUpdate({ userId: userId }, { isOnline: true });
+                    io.emit('userOnlineStatus', { userId, isOnline: true });
+                }));
                 console.log('A user connected:', socket.id);
                 socket.on('sendMessage', (message) => {
                     io.emit('receiveMessage', message);
                 });
-                socket.on('offer', ({ target, offer }) => {
+                // কলার থেকে কলের সিগনাল পেলে রিসিভারকে পাঠান
+                socket.on('callUser', (data) => {
+                    const receiverSocketId = users[data.userToCall];
+                    console.log(data === null || data === void 0 ? void 0 : data.userToCall, 'data');
+                    if (receiverSocketId) {
+                        io.to(receiverSocketId).emit('callUser', {
+                            signal: data.signalData,
+                            from: data.from,
+                        });
+                    }
+                });
+                // রিসিভার থেকে কল একসেপ্ট করার সিগনাল পেলে কলারকে পাঠান
+                socket.on('acceptCall', (data) => {
+                    console.log(data, 'acceptcall data');
+                    const receiverSocketId = users[data.to];
+                    if (receiverSocketId) {
+                        io.to(receiverSocketId).emit('callAccepted', data.signal);
+                    }
+                });
+                socket.on('offer', (_a) => __awaiter(this, [_a], void 0, function* ({ target, offer }) {
                     const receiverSocketId = users[target];
                     console.log(target, 'target');
                     console.log(receiverSocketId, 'receiverSocketId');
@@ -56,7 +78,7 @@ function secretlineServer() {
                     else {
                         console.log('User not found or offline.');
                     }
-                });
+                }));
                 // Receiver sends an answer
                 socket.on('answer', ({ target, answer }) => {
                     const targetSocketId = target;
@@ -77,20 +99,20 @@ function secretlineServer() {
                         });
                     }
                 });
-                // // ICE candidates
-                // socket.on('sendIceCandidate', ({ candidate, to }) => {
-                //   socket.to(to).emit('receiveIceCandidate', { candidate });
-                // });
-                socket.on('disconnect', () => {
+                socket.on('userOffline', (userId) => __awaiter(this, void 0, void 0, function* () {
+                    yield user_model_1.User.findOneAndUpdate({ userId: userId }, { isOnline: false });
+                }));
+                socket.on('disconnect', () => __awaiter(this, void 0, void 0, function* () {
                     for (let userId in users) {
                         if (users[userId] === socket.id) {
+                            yield user_model_1.User.findOneAndUpdate({ userId: userId }, { isOnline: false });
                             delete users[userId];
                             console.log('User disconnected:', userId);
                             break;
                         }
                     }
                     console.log('A user disconnected:', socket.id);
-                });
+                }));
             });
             server.listen(config_1.default.port, () => {
                 console.log(`Secretline Server listening on port ${config_1.default.port}`);

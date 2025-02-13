@@ -56,9 +56,19 @@ const getAllUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_service_1.UserService.getSingleUserIntoDB(req);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Get single user successfully',
+        data: result,
+    });
+}));
 exports.UserController = {
     createMember,
     getMe,
     updateMyProfile,
     getAllUser,
+    getSingleUser,
 };
