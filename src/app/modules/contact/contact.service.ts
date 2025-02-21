@@ -1,10 +1,10 @@
 import { Request } from 'express';
 import { Contact } from './contact.model';
+import { Member } from '../member/member.model';
 
 const createContactIntoDB = async (req: Request) => {
   const { name, email, phone } = req.body;
   const { userId } = req.user;
-  const newContact = { name: name, email: email, phone: phone };
 
   const existingName = await Contact.findOne({
     userId: userId,
@@ -30,15 +30,18 @@ const createContactIntoDB = async (req: Request) => {
     throw new Error(`Duplicate contact phone: ${phone}`);
   }
 
+  const findUserId = await Member.findOne({ email: email }).select("userId").lean();
+  if (!findUserId?.userId) {
+    throw new Error("User ID not found for the given email");
+  }
+  const newContact = { userId: findUserId.userId, name: name, email: email, phone: phone };
+
   const contact = await Contact.findOne({ userId });
-
   if (!contact) {
-    const firstContact = new Contact({
+    return await Contact.create({
       userId: userId,
-      contacts: [{ name: name, email: email, phone: phone }],
+      contacts: [{ userId: findUserId.userId, name: name, email: email, phone: phone }],
     });
-
-    return await Contact.create(firstContact);
   } else {
     contact.contacts.push(newContact);
     return await contact.save();

@@ -4,29 +4,28 @@ import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
 const createChatIntoDB = async (req: Request) => {
-  const { user1Id, user2Id } = req.body;
+  const { userId } = req?.user;
+  const connectUserId = req.body.connectUserId;
 
-  try {
-    // Check if chat already exists
-    const existingChat = await Chat.findOne({
-      userIds: { $all: [user1Id, user2Id] },
-    });
-
-    if (existingChat) {
-      throw new AppError(409, 'Chat room alrady existies!!');
-    }
-
-    // Create a new chat
-    const newChat = new Chat({
-      userIds: [user1Id, user2Id],
-    });
-
-    const savedChat = await newChat.save();
-    console.log(savedChat, 'savechat');
-    return savedChat;
-  } catch (error) {
-    console.log(' Failed to start chat. ');
+  if (!connectUserId) {
+    throw new AppError(httpStatus.CONFLICT, 'Enter the user ID of the user you want to connect with.');
   }
+
+  // Check if chat already exists
+  const existingChat = await Chat.findOne({
+    userIds: { $all: [userId, connectUserId] },
+  });
+  if (existingChat) {
+    throw new AppError(httpStatus.CONFLICT, 'Chat room alrady existies!!');
+  }
+
+  // // Create a new chat
+  const newChat = new Chat({
+    userIds: [userId, connectUserId],
+  });
+
+  const savedChat = await newChat.save();
+  return savedChat;
 };
 
 export const ChatService = {

@@ -2,6 +2,11 @@ import { model, Schema } from 'mongoose';
 import { TContact, TContactUser } from './contact.interface';
 
 const contactUserSchema = new Schema<TContactUser>({
+  userId: {
+    type: String,
+    required: true,
+    unique: true
+  },
   name: {
     type: String,
     required: true,
