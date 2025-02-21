@@ -75,6 +75,7 @@ const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {
     userId: string;
     phone: string;
     email: string;
+    profileImg: string;
   }
 
   const loggedInUserId = req.user.userId;
@@ -87,7 +88,7 @@ const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {
       const otherUser = await Member.find({
         userId: otherUserId,
       })
-        .select('name')
+        .select('name profileImg')
         .populate({
           path: 'user',
           select: 'userId phone email',
@@ -96,6 +97,7 @@ const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {
         const user = item.user as unknown as User; // user ফিল্ডকে User টাইপে কাস্ট করা
         return {
           name: item.name,
+          profileImg: item.profileImg,
           userId: user?.userId,
           phone: user?.phone,
           email: user?.email,
@@ -112,6 +114,7 @@ const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {
         userId: mergedData.userId,
         phone: mergedData.phone,
         email: mergedData.email,
+        profileImg: mergedData.profileImg,
         lastMessage: latestMessage,
         updatedAt: chat.updatedAt,
       };
