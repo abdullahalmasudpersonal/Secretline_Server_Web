@@ -37,40 +37,6 @@ const createMessageIntoDB = async (req: Request) => {
 };
 
 const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {
-  // const loggedInUserId = req.user.userId;
-  // const chats = await Chat.find({ userIds: loggedInUserId });
-  // // Step 2: Populate chat details
-  // const chatDetails = await Promise.all(
-  //   chats.map(async (chat) => {
-  //     // Find the other user in the chat
-  //     const otherUserId = chat.userIds.find((id) => id !== loggedInUserId);
-  //     const otherUser = await User.find({
-  //       userId: otherUserId,
-  //     }).select('email phone userId');
-  //     // console.log(otherUserId);
-  //     // console.log(otherUser);
-  //     // Get the latest message in this chat
-  //     const latestMessage = await Message.findOne({ chatId: chat._id })
-  //       .sort({ timestamp: -1 }) // Sort by latest timestamp
-  //       .select('content timestamp senderId');
-
-  //     return {
-  //       chatId: chat._id,
-  //       // isGroupChat: chat.isGroupChat,
-  //       // chatName: chat.isGroupChat ? chat.chatName : otherUser?.name,
-  //       // otherUser: chat.isGroupChat ? undefined : otherUser,
-  //       user: otherUser,
-  //       lastMessage: latestMessage,
-  //       updatedAt: chat.updatedAt,
-  //     };
-  //   }),
-  // );
-  // return chatDetails;
-  // /////////////////////////////////////////////
-  // interface Member {
-  //   name: string;
-  //   user: User | Types.ObjectId; // Either a populated object or an ObjectId
-  // }
   interface User {
     userId: string;
     phone: string;

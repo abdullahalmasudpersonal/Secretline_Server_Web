@@ -44,22 +44,6 @@ const createMessageIntoDB = (req) => __awaiter(void 0, void 0, void 0, function*
     return savedMessage;
 });
 const getAllUserChatInSingleMemberIntoDB = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    // const loggedInUserId = req.user.userId;
-    // const chats = await Chat.find({ userIds: loggedInUserId });
-    // // Step 2: Populate chat details
-    // const chatDetails = await Promise.all(
-    //   chats.map(async (chat) => {
-    //     // Find the other user in the chat
-    //     const otherUserId = chat.userIds.find((id) => id !== loggedInUserId);
-    //     const otherUser = await User.find({
-    //       userId: otherUserId,
-    //     }).select('email phone userId');
-    //     // console.log(otherUserId);
-    //     // console.log(otherUser);
-    //     // Get the latest message in this chat
-    //     const latestMessage = await Message.findOne({ chatId: chat._id })
-    //       .sort({ timestamp: -1 }) // Sort by latest timestamp
-    //       .select('content timestamp senderId');
     const loggedInUserId = req.user.userId;
     const chats = yield chat_model_1.Chat.find({ userIds: loggedInUserId });
     const chatDetails = yield Promise.all(chats.map((chat) => __awaiter(void 0, void 0, void 0, function* () {
@@ -68,7 +52,7 @@ const getAllUserChatInSingleMemberIntoDB = (req) => __awaiter(void 0, void 0, vo
         const otherUser = yield member_model_1.Member.find({
             userId: otherUserId,
         })
-            .select('name')
+            .select('name profileImg')
             .populate({
             path: 'user',
             select: 'userId phone email',
@@ -77,6 +61,7 @@ const getAllUserChatInSingleMemberIntoDB = (req) => __awaiter(void 0, void 0, vo
             const user = item.user; // user ফিল্ডকে User টাইপে কাস্ট করা
             return {
                 name: item.name,
+                profileImg: item.profileImg,
                 userId: user === null || user === void 0 ? void 0 : user.userId,
                 phone: user === null || user === void 0 ? void 0 : user.phone,
                 email: user === null || user === void 0 ? void 0 : user.email,
@@ -91,6 +76,7 @@ const getAllUserChatInSingleMemberIntoDB = (req) => __awaiter(void 0, void 0, vo
             userId: mergedData.userId,
             phone: mergedData.phone,
             email: mergedData.email,
+            profileImg: mergedData.profileImg,
             lastMessage: latestMessage,
             updatedAt: chat.updatedAt,
         };

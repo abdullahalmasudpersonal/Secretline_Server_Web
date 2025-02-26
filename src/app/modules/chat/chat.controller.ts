@@ -14,6 +14,18 @@ const createChat = catchAsync(async (req, res) => {
   });
 });
 
+const getAllChattingUserSingleMember = catchAsync(async (req, res) => {
+  const result = await ChatService.getAllChattingUserSingleMemberIntoDB(req);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Get all user chat in single member successfully',
+    data: result,
+  });
+});
+
 export const ChatController = {
   createChat,
+  getAllChattingUserSingleMember,
 };

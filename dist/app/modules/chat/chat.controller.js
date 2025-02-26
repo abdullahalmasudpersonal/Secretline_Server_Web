@@ -26,6 +26,16 @@ const createChat = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const getAllChattingUserSingleMember = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield chat_service_1.ChatService.getAllChattingUserSingleMemberIntoDB(req);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Get all user chat in single member successfully',
+        data: result,
+    });
+}));
 exports.ChatController = {
     createChat,
+    getAllChattingUserSingleMember,
 };
