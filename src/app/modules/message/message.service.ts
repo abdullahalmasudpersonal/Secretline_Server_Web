@@ -25,7 +25,6 @@ const createMessageIntoDB = async (req: Request) => {
   });
   const savedMessage = await newMessage.save();
 
-  // Update the chat's last message
   await Chat.findByIdAndUpdate(
     { _id: chatId },
     {
@@ -37,8 +36,36 @@ const createMessageIntoDB = async (req: Request) => {
 };
 
 const createVocieMessageIntoDB = async (req: Request) => {
-  ////
-  console.log(req.file, 'body');
+  const senderId = req.user.userId;
+  const { chatId, messageType } = req.body;
+  const voiceMessage = req.file?.path;
+  const chat = await Chat.findOne({ _id: chatId });
+  if (!chat) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No Chat found');
+  }
+  const isSenderInChat = chat.userIds.includes(senderId);
+  if (!isSenderInChat) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'This is not your chat');
+  }
+
+  const newMessage = new Message({
+    chatId,
+    senderId,
+    content: voiceMessage,
+    messageType,
+  });
+
+  const savedMessage = await newMessage.save();
+
+  // Update the chat's last message
+  await Chat.findByIdAndUpdate(
+    { _id: chatId },
+    {
+      lastMessage: voiceMessage,
+      updatedAt: new Date(),
+    },
+  );
+  return savedMessage;
 };
 
 const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {

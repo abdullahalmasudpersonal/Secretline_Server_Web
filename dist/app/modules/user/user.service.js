@@ -77,7 +77,6 @@ const updateMyProfileIntoDB = (req) => __awaiter(void 0, void 0, void 0, functio
     }
     const file = req.file;
     req.body.profileImg = file === null || file === void 0 ? void 0 : file.path;
-    console.log(req === null || req === void 0 ? void 0 : req.file, 'body');
     let profileData;
     if ((userData === null || userData === void 0 ? void 0 : userData.role) === user_constant_1.USER_ROLE.member) {
         profileData = yield member_model_1.Member.findOneAndUpdate({ email: userData === null || userData === void 0 ? void 0 : userData.email }, { $set: req.body });
@@ -101,10 +100,12 @@ const getAllUserIntoDB = (req) => __awaiter(void 0, void 0, void 0, function* ()
 const getSingleUserIntoDB = (req) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const userId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.userId;
-    const user = yield member_model_1.Member.findOne({ userId }).select({
+    const user = yield member_model_1.Member.findOne({ userId })
+        .select({
         name: true,
-        profileImg: true
-    }).populate({ path: "user", select: "isOnline" });
+        profileImg: true,
+    })
+        .populate({ path: 'user', select: 'isOnline' });
     return user;
 });
 exports.UserService = {

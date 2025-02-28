@@ -36,9 +36,35 @@ const createMessageIntoDB = (req) => __awaiter(void 0, void 0, void 0, function*
         messageType,
     });
     const savedMessage = yield newMessage.save();
-    // Update the chat's last message
     yield chat_model_1.Chat.findByIdAndUpdate({ _id: chatId }, {
         lastMessage: content,
+        updatedAt: new Date(),
+    });
+    return savedMessage;
+});
+const createVocieMessageIntoDB = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const senderId = req.user.userId;
+    const { chatId, messageType } = req.body;
+    const voiceMessage = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
+    const chat = yield chat_model_1.Chat.findOne({ _id: chatId });
+    if (!chat) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'No Chat found');
+    }
+    const isSenderInChat = chat.userIds.includes(senderId);
+    if (!isSenderInChat) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'This is not your chat');
+    }
+    const newMessage = new message_model_1.Message({
+        chatId,
+        senderId,
+        content: voiceMessage,
+        messageType,
+    });
+    const savedMessage = yield newMessage.save();
+    // Update the chat's last message
+    yield chat_model_1.Chat.findByIdAndUpdate({ _id: chatId }, {
+        lastMessage: voiceMessage,
         updatedAt: new Date(),
     });
     return savedMessage;
@@ -100,6 +126,7 @@ const getSingleUserChatInSingleMemberIntoDB = (req) => __awaiter(void 0, void 0,
 });
 exports.MessageService = {
     createMessageIntoDB,
+    createVocieMessageIntoDB,
     getAllUserChatInSingleMemberIntoDB,
     getSingleUserChatInSingleMemberIntoDB,
 };

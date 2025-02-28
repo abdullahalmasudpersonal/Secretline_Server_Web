@@ -26,6 +26,15 @@ const createMessage = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: result,
     });
 }));
+const createVoiceMessage = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield message_service_1.MessageService.createVocieMessageIntoDB(req);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Create voice message successfully',
+        data: result,
+    });
+}));
 const getAllUserChatInSingleMember = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield message_service_1.MessageService.getAllUserChatInSingleMemberIntoDB(req);
     (0, sendResponse_1.default)(res, {
@@ -46,6 +55,7 @@ const getSingleUserChatInSingleMember = (0, catchAsync_1.default)((req, res) => 
 }));
 exports.MessageController = {
     createMessage,
+    createVoiceMessage,
     getAllUserChatInSingleMember,
     getSingleUserChatInSingleMember,
 };

@@ -51,6 +51,7 @@ const multer_1 = __importDefault(require("multer"));
 const fs = __importStar(require("fs"));
 const config_1 = __importDefault(require("../config"));
 const multer_storage_cloudinary_1 = require("multer-storage-cloudinary");
+const moment_1 = __importDefault(require("moment"));
 cloudinary_1.v2.config({
     cloud_name: config_1.default.cloudinary.cloud_name,
     api_key: config_1.default.cloudinary.api_key,
@@ -73,11 +74,32 @@ const storage = new multer_storage_cloudinary_1.CloudinaryStorage({
         folder: 'uploads', // Cloudinary এর ফোল্ডার
         format: (req, file) => __awaiter(void 0, void 0, void 0, function* () { return 'png'; }), // ফাইল ফরম্যাট সেট করো
         public_id: (req, file) => file.originalname.split('.')[0],
-        // folder: 'uploads', // Cloudinary-তে ফোল্ডারের নাম
         // allowed_formats: ['jpeg', 'png', 'jpg', 'webp'], // ফরম্যাট সীমাবদ্ধতা
     },
 });
 const upload = (0, multer_1.default)({ storage: storage });
+// 📂 অডিও ফাইল সংরক্ষণের জন্য multer সেটআপ
+const audioStorage = new multer_storage_cloudinary_1.CloudinaryStorage({
+    cloudinary: cloudinary_1.v2,
+    params: {
+        // @ts-ignore
+        folder: 'voice-messages',
+        resource_type: 'video',
+        format: (req, file) => __awaiter(void 0, void 0, void 0, function* () { return 'webm'; }),
+        // public_id: (req, file) => file.originalname.split('.')[0],
+        public_id: (req, file) => `voice_${(0, moment_1.default)().format('ss[s]-mm[m]-hhA-DDMMM-YYYY')}`,
+    },
+});
+/// upload local disk storage
+// const audioStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/'); // 📁 "uploads" ফোল্ডারে ফাইল সংরক্ষণ
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + path.extname(file.originalname)); // 🔥 ইউনিক ফাইলনেম
+//   },
+// });
+const uploadAudio = (0, multer_1.default)({ storage: audioStorage });
 //////////// Only Single file upload in Object
 // const uploadToCloudinary = async (
 //   uploadFiles: IUploadFile,
@@ -120,4 +142,5 @@ const uploadToCloudinary = (uploadFiles) => __awaiter(void 0, void 0, void 0, fu
 exports.FileUploadHelper = {
     uploadToCloudinary,
     upload,
+    uploadAudio,
 };

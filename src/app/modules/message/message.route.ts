@@ -17,6 +17,7 @@ router.post(
   auth(USER_ROLE.admin, USER_ROLE.member),
   FileUploadHelper.uploadAudio.single('audio'),
   (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req?.body?.data);
     return MessageController.createVoiceMessage(req, res, next);
   },
 );
