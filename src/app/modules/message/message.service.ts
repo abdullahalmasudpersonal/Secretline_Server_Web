@@ -36,6 +36,11 @@ const createMessageIntoDB = async (req: Request) => {
   return savedMessage;
 };
 
+const createVocieMessageIntoDB = async (req: Request) => {
+  ////
+  console.log(req.file, 'body');
+};
+
 const getAllUserChatInSingleMemberIntoDB = async (req: Request) => {
   interface User {
     userId: string;
@@ -111,6 +116,7 @@ const getSingleUserChatInSingleMemberIntoDB = async (req: Request) => {
 
 export const MessageService = {
   createMessageIntoDB,
+  createVocieMessageIntoDB,
   getAllUserChatInSingleMemberIntoDB,
   getSingleUserChatInSingleMemberIntoDB,
 };

@@ -14,6 +14,16 @@ const createMessage = catchAsync(async (req: Request, res) => {
   });
 });
 
+const createVoiceMessage = catchAsync(async (req: Request, res) => {
+  const result = await MessageService.createVocieMessageIntoDB(req);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Create voice message successfully',
+    data: result,
+  });
+});
+
 const getAllUserChatInSingleMember = catchAsync(async (req, res) => {
   const result = await MessageService.getAllUserChatInSingleMemberIntoDB(req);
   sendResponse(res, {
@@ -37,6 +47,7 @@ const getSingleUserChatInSingleMember = catchAsync(async (req, res) => {
 
 export const MessageController = {
   createMessage,
+  createVoiceMessage,
   getAllUserChatInSingleMember,
   getSingleUserChatInSingleMember,
 };

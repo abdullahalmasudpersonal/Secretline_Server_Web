@@ -76,11 +76,8 @@ const updateMyProfileIntoDB = async (req: Request) => {
   }
   const file = req.file as IUploadFile;
   req.body.profileImg = file?.path;
-  console.log(req?.file, 'body');
 
   let profileData;
-
-
 
   if (userData?.role === USER_ROLE.member) {
     profileData = await Member.findOneAndUpdate(
@@ -109,13 +106,14 @@ const getAllUserIntoDB = async (req: Request) => {
 const getSingleUserIntoDB = async (req: Request) => {
   const userId = req?.params?.userId;
 
-  const user = await Member.findOne({ userId }).select({
-    name: true,
-    profileImg: true
-  }).populate({ path: "user", select: "isOnline" })
+  const user = await Member.findOne({ userId })
+    .select({
+      name: true,
+      profileImg: true,
+    })
+    .populate({ path: 'user', select: 'isOnline' });
   return user;
-}
-
+};
 
 export const UserService = {
   createMemberIntoDB,
